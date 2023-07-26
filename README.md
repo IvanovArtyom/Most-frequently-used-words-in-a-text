@@ -26,3 +26,35 @@ top_3_words("  //wont won't won't")
 ### Bonus points (not really, but just for fun):
 1. Avoid creating an array whose memory footprint is roughly as big as the input text.
 2. Avoid sorting the entire array of unique words.
+### My solution
+```C#
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
+
+public class TopWords
+{
+    public static List<string> Top3(string s)
+    {
+        Dictionary<string, int> dict = new();
+        var words = Regex.Matches(s.ToLowerInvariant(), @"('*[a-z]'*)+").Select(match => match.Value);
+        List<string> result = new();
+
+        foreach (var word in words)
+        {
+            if (dict.ContainsKey(word))
+                dict[word]++;
+
+            else dict.Add(word, 1);
+        }
+
+        for (int i = 0; dict.Count > 0 && i < 3; i++)
+        {
+            result.Add(dict.First(x => x.Value == dict.Max(x => x.Value)).Key);
+            dict.Remove(result[i]);
+        }
+
+        return result;
+    }
+}
+```
